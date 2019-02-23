@@ -1,0 +1,36 @@
+* {
+	padding: 0;
+	margin: 0;
+}
+main {
+  text-align: center;
+  margin-top: 200px;
+}
+#main {
+	display: inline-block;
+	text-align: center;
+}
+#main>div>kbd {
+  font-size: 20px;
+	width: 70px;
+	height: 70px;
+  border: 1px solid #000;
+	line-height: 70px;
+	text-align: center;
+	margin: 10px;
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+}
+#main>div>kbd:hover {
+  box-shadow: 1px 1px 10px 0px rgba(107,107,107,1);
+}
+#main>div>kbd>button {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: none;
+}
+#main>div>kbd:hover > button{
+  display: inline-block;
+}
