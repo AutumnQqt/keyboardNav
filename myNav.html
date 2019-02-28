@@ -25,7 +25,7 @@
 		listenToUser(hash)
 		
 
-		
+
 
 		//工具函数
 		function stringUnEmpty(string) {
@@ -57,14 +57,16 @@
 		}
 
 		function btnClick(button) {
-			button.onclick = function (event) {
+			function click(event) {
 				var buttonId = event.target.id
+				console.log(event.target)
 				var newWebsite = prompt('请输入一个网址')
 				hash[buttonId] = newWebsite
 				localStorage.setItem('hash', JSON.stringify(hash))
 				var prevImg = event.target.previousSibling
 				setImgSrc(prevImg, newWebsite)
 			}
+			return click
 		}
 
 		function getClassName(content) {
