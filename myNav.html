@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>我的导航</title>
+	<title>陈秋钿的导航</title>
 	<link rel="stylesheet" href="./myNav.css">
 </head>
 
@@ -13,72 +13,132 @@
 	</main>
 
 	<script>
-		var init = {
-			'0': ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-			'1': ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-			'2': ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
-			'length': 3
-		}
-		var hash = {
-			'q' : 'qq.com',
-			'w' : 'weibo.com',
-			'r' : 'renren.com', 
-			't' : 'taobao.com', 
-			'y' : 'youku.com', 
-			'i' : 'iqiyi.com', 
-			'o' : 'opera.com', 
-			's' : '', 
-			'd' : '', 
-			'f' : '', 
-			'g' : 'google.com', 
-			'h' : '', 
-			'j' : 'jianshu.com', 
-			'k' : 'kugou.com', 
-			'l' : '',
-			'z' : 'zhihu.com', 
-			'x' : '', 
-			'c' : 'csdn.net', 
-			'v' : '', 
-			'b' : 'baidu.com', 
-			'n' : '', 
-			'm' : ''
-		}
+		//1.初始化数据
+		var hashA = init()
+		var keys = hashA.keys
+		var hash = hashA.hash
+
+		//2.创建键盘
+		generateKeyboard(keys, hash)
+
+		//3.监听用户动作
+		listenToUser(hash)
 		
-		var index2 = 0
-		var hashInLocalStorage = JSON.parse(localStorage.getItem('hash') || 'null')
-		if(hashInLocalStorage){
-			hash = hashInLocalStorage
-		}
-		while (index2 < init.length) {
-			var index = 0
-			var div = document.createElement('div')
-			while (index < init[index2].length) {
-				var kbd = document.createElement('kbd')
-				kbd.textContent = init[index2][index]
-				var button = document.createElement('button')
-				button.textContent = '编辑'
-				button.id = init[index2][index]
-				button.onclick = function(event){
-					var buttonId = event.target.id
-					var newWebsite = prompt('请输入一个网址')
-					hash[buttonId] = newWebsite
-					localStorage.setItem('hash',JSON.stringify(hash))
-				}
-				kbd.appendChild(button)
-				div.appendChild(kbd)
-				index = index + 1
+
+		
+
+		//工具函数
+		function stringUnEmpty(string) {
+			if (string != undefined && string != null && string.replace(/(^s*)|(s*$)/g, "").length != 0 && string.length != 0) {
+				return true
+			} else {
+				return false
 			}
-			main.appendChild(div)
-			index2 = index2 + 1
 		}
 
-		document.onkeypress = function(event){
-			var key = event.key
-			console.log(hash[key])
-			if(hash[key] != undefined){
-				website = 'http://' + hash[key]
-				console.log(website)
-				window.open(website,'_blank')
+		function tag(element, attr) {
+			var element = document.createElement(element)
+			for (var item in attr) {
+				element[item] = attr[item]
+			}
+			return element
+		}
+
+		function setImgSrc(img, website) {
+			if (stringUnEmpty(website)) {
+				img.src = 'https://www.' + website + '/favicon.ico'
+			} else {
+				img.src = './img/icon.png'
+			}
+			img.onerror = function (event) {
+				event.target.src = './img/icon.png'
+			}
+			return true
+		}
+
+		function btnClick(button) {
+			button.onclick = function (event) {
+				var buttonId = event.target.id
+				var newWebsite = prompt('请输入一个网址')
+				hash[buttonId] = newWebsite
+				localStorage.setItem('hash', JSON.stringify(hash))
+				var prevImg = event.target.previousSibling
+				setImgSrc(prevImg, newWebsite)
+			}
+		}
+
+		function getClassName(content) {
+			var kbdClassName = 'kbd'
+			if (content == 'Backspace') {
+				kbdClassName = kbdClassName + ' backSpace'
+			} else if (content == 'Tab') {
+				kbdClassName = kbdClassName + ' tab'
+			} else if (content == 'Caps Lock') {
+				kbdClassName = kbdClassName + ' capsLock'
+			} else if (content == 'Enter') {
+				kbdClassName = kbdClassName + ' enter'
+			} else if (content == 'Shift') {
+				kbdClassName = kbdClassName + ' shift'
+			} else if (content == 'Space') {
+				kbdClassName = kbdClassName + ' space'
+			}
+			return kbdClassName
+		}
+
+		function init() {
+			var keys = {
+				'0': ['~', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '+', 'Backspace'],
+				'1': ['Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '{', '}', '|'],
+				'2': ['Caps Lock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ':', '"', 'Enter'],
+				'3': ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '<', '>', '?', 'Shift'],
+				'4': ['Ctrl', 'win', 'Alt', 'Space', 'Alt', 'win', 'op', 'Ctrl'],
+				'length': 5
+			}
+			var hash = {
+				'q': 'qq.com', 'w': 'weibo.com', 'r': 'renren.com', 't': 'taobao.com', 'y': 'youku.com', 'i': 'iqiyi.com', 'o': 'opera.com',
+				's': '', 'd': '', 'f': '', 'g': 'google.com', 'h': '', 'j': 'jianshu.com',
+				'k': 'kugou.com', 'l': '', 'z': 'zhihu.com', 'x': '', 'c': 'csdn.net',
+				'v': '', 'b': 'baidu.com',
+				'n': '',
+				'm': ''
+			}
+			var hashInLocalStorage = JSON.parse(localStorage.getItem('hash') || 'null')
+			if (hashInLocalStorage) {
+				hash = hashInLocalStorage
+			}
+			return {
+				'keys': keys,
+				'hash': hash
+			}
+		}
+
+		function generateKeyboard(keys, hash) {
+			for (var index2 = 0; index2 < keys.length; index2++) {
+				var index = 0
+				var div = tag('div')
+				for (var index; index < keys[index2].length; index++) {
+					var content = keys[index2][index]
+					var kbd = tag('kbd', { 'className': getClassName(content), 'textContent': content })
+					var img = tag('img')
+					setImgSrc(img, hash[content])
+
+					var button = tag('button', { 'textContent': 'E', 'id': keys[index2][index], 'onclick': btnClick(this) })
+
+					kbd.appendChild(img)
+					kbd.appendChild(button)
+					div.appendChild(kbd)
+				}
+				main.appendChild(div)
+			}
+		}
+
+		function listenToUser(hash){
+			document.onkeypress = function (event) {
+				var key = event.key
+				if (stringUnEmpty(hash[key])) {
+					website = 'http://' + hash[key]
+					window.open(website, '_blank')
+				}
 			}
 		}
 
